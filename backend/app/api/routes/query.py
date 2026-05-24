@@ -189,6 +189,7 @@ def ask_query(request: QueryRequest):
     )
 
     documents = results.get("documents", [[]])[0]
+    metadatas = results.get("metadatas", [[]])[0]
 
     dependency_graph = []
 
@@ -284,33 +285,38 @@ def ask_query(request: QueryRequest):
     # =====================================
 
     prompt = f"""
-You are an expert AI software architecture assistant.
+    You are an expert AI software architecture assistant.
 
-Your job is to explain:
+    Your responsibilities:
+    - Explain repository architecture
+    - Explain execution flow
+    - Explain API routes and backend flow
+    - Explain dependencies and module relationships
+    - Explain functions, classes, and services
+    - Explain request lifecycle and control flow
 
-- repository architecture
-- backend flow
-- module relationships
-- execution flow
-- API structure
-- services and dependencies
+    STRICT RULES:
+    - ONLY use the provided repository context
+    - DO NOT invent code or architecture
+    - DO NOT hallucinate missing information
+    - If context is insufficient, say:
+    "Not enough repository context found."
+    - Keep answers concise and repository-focused
+    - Mention actual files/functions/classes if available
+    - Distinguish between hooks, functions, classes, routes, and services correctly
+    - Do not classify normal helper functions as React hooks
+    - Explain repository-specific implementation details
+    - Prefer concrete explanations over generic programming explanations
+    - Explain flow step-by-step when relevant
 
-IMPORTANT RULES:
+    REPOSITORY CONTEXT:
+    {context}
 
-- ONLY use the provided repository context
-- DO NOT invent code or architecture
-- DO NOT hallucinate
-- If context is insufficient, say:
-  "Not enough repository context found."
-- Keep answers concise and repository-focused
-- Mention actual files/functions if available
+    USER QUESTION:
+    {request.query}
 
-REPOSITORY CONTEXT:
-{context}
-
-USER QUESTION:
-{request.query}
-"""
+    ANSWER:
+    """
 
     ai_response = generate_response(prompt)
 
@@ -320,8 +326,49 @@ USER QUESTION:
         dependency_graph
     )
 
+    # =====================================
+    # BUILD SOURCE SNIPPETS
+    # =====================================
+
+    sources = []
+    seen = set()
+
+    for index, doc in enumerate(documents[:5]):
+
+        if doc in seen:
+            continue
+
+        seen.add(doc)
+        metadata = {}
+
+        if index < len(metadatas):
+            metadata = metadatas[index]
+
+        source = {
+            "file": metadata.get(
+                "file_path",
+                "Unknown"
+            ),
+            "function": metadata.get(
+                "name",
+                "Unknown"
+            ),
+            "type": metadata.get(
+                "type",
+                "Unknown"
+            ),
+            "language": metadata.get(
+                "language",
+                "Unknown"
+            ),
+            "code": doc[:1200]
+        }
+
+        sources.append(source)
+
     return {
         "query": request.query,
         "answer": ai_response,
-        "diagram": diagram
+        "diagram": diagram,
+        "sources": sources
     }

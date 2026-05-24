@@ -367,34 +367,80 @@ mermaid.init(undefined, document.querySelectorAll(".mermaid"));
         );
 
         const data = await response.json();
+        let sourceHTML = "";
 
-        visualizationArea.innerHTML = ` <div class="architecture-card">
-    <h2>Repository Architecture</h2>
+        if (data.sources) {
 
-    <div class="mermaid diagram-box">
-        ${data.diagram}
-    </div>
+        data.sources.forEach(source => {
 
-    <div class="context-card">
+            sourceHTML += `
 
-        <h3>Question</h3>
+                <div class="snippet-card">
 
-        <p>${data.query}</p>
+                    <div class="snippet-header">
 
-    </div>
+                        <div>
+                            <strong>${source.function}</strong>
+                        </div>
 
-    <div class="context-card">
+                        <div class="snippet-file">
+                            ${source.file}
+                        </div>
 
-        <h3>AI Answer</h3>
+                    </div>
 
-        <p style="white-space: pre-wrap;">
-            ${data.answer}
-        </p>
+                    <div class="snippet-type">
+                        ${source.type}
+                        •
+                        ${source.language}
+                    </div>
 
-    </div>
+                    <pre class="code-block"><code>${source.code}</code></pre>
+                </div>
+            `;
+        });
 
-</div>
-`;
+        }
+
+        visualizationArea.innerHTML = `
+
+        <div class="architecture-card">
+
+        <h2>Repository Architecture</h2>
+
+        <div class="mermaid diagram-box">
+            ${data.diagram}
+        </div>
+
+        <div class="context-card">
+
+            <h3>Question</h3>
+
+            <p>${data.query}</p>
+
+        </div>
+
+        <div class="context-card">
+
+            <h3>AI Answer</h3>
+
+            <p style="white-space: pre-wrap;">
+                ${data.answer}
+            </p>
+
+        </div>
+
+        <div class="context-card">
+
+            <h3>Relevant Code Snippets</h3>
+
+            ${sourceHTML}
+
+        </div>
+
+        </div>
+        `;
+
 
 mermaid.init(undefined, document.querySelectorAll(".mermaid"));
 

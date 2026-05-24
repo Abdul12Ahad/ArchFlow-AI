@@ -162,7 +162,7 @@ def extract_js_ts_functions(file_path):
                         "type": item_type,
                         "name": name,
                         "start_line": line_number,
-                        "end_line": line_number
+                        "end_line": min(line_number + 40, len(source_code))
                     })
 
         return extracted_items
@@ -214,7 +214,7 @@ def extract_java_methods(file_path):
                         "type": item_type,
                         "name": name,
                         "start_line": line_number,
-                        "end_line": line_number
+                        "end_line": min(line_number + 40, len(source_code))
                     })
 
         return extracted_items

@@ -16,13 +16,46 @@ def get_language(file_path):
 
 
 def create_chunks(file_path, extracted_elements):
-
     chunks = []
 
     try:
 
         with open(file_path, "r", encoding="utf-8", errors="ignore") as file:
             lines = file.readlines()
+
+        # =====================================
+        # EXTRACT GLOBAL METADATA
+        # =====================================
+
+        imports = []
+        calls = []
+        routes = []
+
+        for item in extracted_elements:
+
+            if item["type"] == "imports":
+
+                imports = [
+                    imp.strip()
+                    for imp in item["name"].split(",")
+                    if imp.strip()
+                ]
+
+            elif item["type"] == "function_calls":
+
+                calls = [
+                    call.strip()
+                    for call in item["name"].split(",")
+                    if call.strip()
+                ]
+
+            elif item["type"] == "routes":
+
+                routes = str(item["name"])
+
+        # =====================================
+        # BUILD CHUNKS
+        # =====================================
 
         for element in extracted_elements:
 
@@ -39,7 +72,6 @@ def create_chunks(file_path, extracted_elements):
             ):
                 continue
 
-                
             start = element["start_line"] - 1
             end = element["end_line"]
 
@@ -50,6 +82,9 @@ def create_chunks(file_path, extracted_elements):
                 "name": element["name"],
                 "file_path": file_path,
                 "language": get_language(file_path),
+                "imports": imports,
+                "calls": calls,
+                "routes": routes,
                 "code": code_chunk
             }
 

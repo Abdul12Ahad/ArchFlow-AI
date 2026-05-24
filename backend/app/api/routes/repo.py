@@ -152,9 +152,19 @@ def process_repository(job_id, repo_url):
 
                 LANGUAGE: {chunk['language']}
 
+                IMPORTS:
+                {",".join(chunk.get("imports", []))}
+
+                CALLS:
+                {",".join(chunk.get("calls", []))}
+
+                ROUTES:
+                {chunk.get("routes", [])}
+
                 CODE:
                 {chunk['code']}
                 """
+
 
                 store_chunk(
                 chunk_id=chunk_id,

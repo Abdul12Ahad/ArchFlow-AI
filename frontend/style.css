@@ -488,3 +488,131 @@ body {
 ::-webkit-scrollbar-thumb:hover {
     background: rgba(255,255,255,0.2);
 }
+
+/* =========================================
+CODE SNIPPETS
+========================================= */
+
+.snippet-card {
+
+margin-top: 20px;
+
+border-radius: 16px;
+
+overflow: hidden;
+
+border: 1px solid rgba(255,255,255,0.06);
+
+background: rgba(255,255,255,0.03);
+
+}
+
+.snippet-header {
+
+display: flex;
+justify-content: space-between;
+align-items: center;
+
+padding: 14px 18px;
+
+background: rgba(255,255,255,0.04);
+
+border-bottom: 1px solid rgba(255,255,255,0.05);
+
+}
+
+.snippet-file {
+
+color: #00d4ff;
+
+font-size: 13px;
+
+}
+
+.snippet-type {
+
+padding: 10px 18px;
+
+color: rgba(255,255,255,0.65);
+
+font-size: 13px;
+
+}
+
+.code-block {
+
+margin: 0;
+
+padding: 18px;
+
+overflow-x: auto;
+
+background: #020817;
+
+color: #d1d5db;
+
+font-size: 13px;
+
+line-height: 1.6;
+
+}
+
+
+.snippet-card {
+
+    margin-top: 20px;
+
+    padding: 16px;
+
+    border-radius: 14px;
+
+    background: rgba(255,255,255,0.04);
+
+    border: 1px solid rgba(255,255,255,0.06);
+}
+
+.snippet-header {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    margin-bottom: 10px;
+
+    color: #00d4ff;
+}
+
+.snippet-file {
+
+    font-size: 13px;
+
+    opacity: 0.7;
+}
+
+.snippet-type {
+
+    margin-bottom: 12px;
+
+    font-size: 13px;
+
+    opacity: 0.7;
+}
+
+.code-block {
+
+    overflow-x: auto;
+
+    padding: 16px;
+
+    border-radius: 12px;
+
+    background: #0d1526;
+
+    color: #d6e2ff;
+
+    font-size: 13px;
+
+    line-height: 1.6;
+
+    white-space: pre-wrap;
+}
