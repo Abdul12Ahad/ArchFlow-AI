@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AI Codebase Explainer</title>
+
+    <link rel="stylesheet" href="style.css" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+
+    <!-- TOP NAVBAR -->
+    <header class="top-navbar">
+
+        <div class="logo-section">
+            <div class="logo-circle"></div>
+            <h1>AI Codebase Explainer</h1>
+        </div>
+
+    </header>
+
+    <!-- TOP REPOSITORY BAR -->
+<section class="top-repo-bar">
+
+    <div class="hero-input">
+
+        <input
+            type="text"
+            id="repoUrl"
+            placeholder="Paste GitHub Repository URL"
+            autocomplete="off"
+        >
+
+        <button
+            id="analyzeBtn"
+            type="button"
+        >
+            Analyze Repository
+        </button>
+
+    </div>
+
+</section>
+
+
+    <!-- MAIN LAYOUT -->
+    <main class="main-layout">
+
+        <!-- LEFT PANEL -->
+        <aside class="left-panel panel">
+
+            <div class="panel-title">
+                Repository Explorer
+            </div>
+
+            <div class="panel-content file-structure">
+
+                <div class="empty-state">
+                    Repository files will appear here
+                </div>
+
+            </div>
+
+        </aside>
+
+
+        <!-- CENTER PANEL -->
+<!-- CENTER PANEL -->
+<section class="center-panel panel">
+
+    <div class="workspace-header">
+        AI Workspace
+    </div>
+
+    <!-- MAIN OUTPUT AREA -->
+    <div class="visualization-area">
+
+        <div class="welcome-card">
+
+            <h2>Repository Visualization Workspace</h2>
+
+            <p>
+                Repository architecture, AI explanations,
+                semantic search results, dependency graphs,
+                and intelligent insights will appear here.
+            </p>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+        <!-- RIGHT PANEL -->
+        <aside class="right-panel panel">
+
+            <div class="panel-title">
+                AI Context & Insights
+            </div>
+
+            <div class="insights-container">
+
+                <div class="context-card">
+
+                    <h3>Status</h3>
+
+                    <p>
+                        Waiting for repository analysis...
+                    </p>
+
+                </div>
+
+            </div>
+
+        </aside>
+
+    </main>
+
+
+    <!-- BOTTOM QUERY PANEL -->
+    <section class="query-panel">
+
+        <input
+            type="text"
+            id="queryInput"
+            placeholder="Ask questions about repository..."
+        >
+
+        <button id="askBtn">
+            Ask AI
+        </button>
+
+    </section>
+
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+
+        <script>
+            mermaid.initialize({
+                startOnLoad: true,
+                theme: "dark"
+            });
+        </script>
+
+<script src="./script.js?v=999"></script>
+
+
+</body>
+</html>
