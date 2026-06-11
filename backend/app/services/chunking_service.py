@@ -26,6 +26,7 @@ def create_chunks(file_path, extracted_elements):
         # =====================================
         # EXTRACT GLOBAL METADATA
         # =====================================
+        # FULL FILE CHUNK
 
         imports = []
         calls = []
@@ -57,6 +58,19 @@ def create_chunks(file_path, extracted_elements):
         # BUILD CHUNKS
         # =====================================
 
+        full_file_chunk = {
+            "type": "file",
+            "name": os.path.basename(file_path),
+            "file_path": file_path,
+            "language": get_language(file_path),
+            "imports": imports if 'imports' in locals() else [],
+            "calls": [],
+            "routes": [],
+            "code": "".join(lines[:500])
+        }
+
+        chunks.append(full_file_chunk)
+        
         for element in extracted_elements:
 
             if element["type"] not in [

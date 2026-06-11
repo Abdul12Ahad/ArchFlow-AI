@@ -19,6 +19,7 @@ window.addEventListener("DOMContentLoaded", () => {
     const askBtn = document.getElementById("askBtn");
     const queryInput = document.getElementById("queryInput");
     let selectedFile = null;
+    let selectedFunction = null;
 
     console.log(analyzeBtn);
 
@@ -72,7 +73,7 @@ window.addEventListener("DOMContentLoaded", () => {
                 html += `
                     <div
                         class="nested file-item"
-                        onclick="selectFile('${currentPath}')"
+                        onclick="selectFile('${currentPath}', this)"
                     >
                         📄 ${key}
                     </div>
@@ -103,60 +104,89 @@ window.addEventListener("DOMContentLoaded", () => {
         }
     };
 
-    window.selectFile = function(filePath) {
+    window.selectFile = function(filePath, element) {
 
-        selectedFile = filePath;
+    selectedFile = filePath;
+    selectedFunction = null;
 
-        document
-            .querySelectorAll(".file-item")
-            .forEach(item => {
-                item.style.background = "transparent";
-            });
-
-        event.target.style.background =
-            "rgba(255,255,255,0.1)";
-
-        const currentData =
-            window.latestRepositoryData;
-
-        const functions =
-            currentData.file_data[filePath] || [];
-
-        let functionsHTML = "";
-
-        functions.forEach(item => {
-
-            functionsHTML += `
-                <div class="context-card">
-
-                    <h3>
-                        ${item.type.toUpperCase()}
-                    </h3>
-
-                    <p>${item.name}</p>
-
-                    <small>
-                        Lines:
-                        ${item.start_line}
-                        -
-                        ${item.end_line}
-                    </small>
-
-                </div>
-            `;
+    document
+        .querySelectorAll(".file-item")
+        .forEach(item => {
+            item.style.background = "transparent";
         });
 
-        insightsContainer.innerHTML = `
-            <div class="context-card">
+    element.style.background =
+    "rgba(255,255,255,0.1)";
 
-                <h3>Selected File</h3>
+    document
+        .querySelectorAll(".function-card")
+        .forEach(card => {
+            card.style.border = "none";
+        });
 
-                <p>${filePath}</p>
+    const currentData =
+        window.latestRepositoryData;
 
-            </div>
+    const functions =
+        currentData.file_data[filePath] || [];
 
-            ${functionsHTML}
+    let functionsHTML = "";
+
+    functions.forEach(item => {
+
+        functionsHTML += `
+        <div
+            class="context-card function-card"
+            onclick="selectFunction('${item.name}', this)"
+        >
+
+            <h3>
+                ${item.type.toUpperCase()}
+            </h3>
+
+            <p>${item.name}</p>
+
+            <small>
+                Lines:
+                ${item.start_line}
+                -
+                ${item.end_line}
+            </small>
+
+        </div>
         `;
+    });
+
+    insightsContainer.innerHTML = `
+        <div class="context-card">
+
+            <h3>Selected File</h3>
+
+            <p>${filePath}</p>
+
+        </div>
+
+        ${functionsHTML}
+    `;
+    };
+
+    window.selectFunction = function(functionName, element) {
+
+    selectedFunction = functionName;
+
+    document
+        .querySelectorAll(".function-card")
+        .forEach(card => {
+            card.style.border = "none";
+        });
+
+    element.style.border =
+        "2px solid #4cafef";
+
+    console.log(
+        "Selected Function:",
+        selectedFunction
+    );
     };
 
     /*
@@ -361,7 +391,9 @@ mermaid.init(undefined, document.querySelectorAll(".mermaid"));
                     "Content-Type": "application/json"
                 },
                 body: JSON.stringify({
-                    query: query
+                    query: query,
+                    selected_file: selectedFile,
+                    selected_function: selectedFunction
                 })
             }
         );
@@ -410,6 +442,20 @@ mermaid.init(undefined, document.querySelectorAll(".mermaid"));
 
         <div class="mermaid diagram-box">
             ${data.diagram}
+        </div>
+
+        <div class="context-card">
+
+            <h3>Current Context</h3>
+
+            <p>
+                📄 ${selectedFile || "Global Repository"}
+            </p>
+
+            <p>
+                ⚙️ ${selectedFunction || "None"}
+            </p>
+
         </div>
 
         <div class="context-card">

@@ -137,8 +137,9 @@ def process_repository(job_id, repo_url):
                 metadata = {
                     "type": chunk["type"],
                     "name": chunk["name"],
-                    "file_path": chunk["file_path"],
-                    "language": chunk["language"]
+                    "file_path": relative_path,
+                    "language": chunk["language"],
+                    "is_file_chunk": chunk["type"] == "file"
                 }
 
                 chunk_id = str(uuid.uuid4())

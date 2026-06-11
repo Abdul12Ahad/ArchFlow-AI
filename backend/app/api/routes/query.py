@@ -10,7 +10,8 @@ router = APIRouter()
 
 class QueryRequest(BaseModel):
     query: str
-
+    selected_file: str | None = None
+    selected_function: str | None = None
 
 # =========================================
 # GENERATE DYNAMIC DIAGRAM
@@ -181,15 +182,75 @@ def ask_query(request: QueryRequest):
 
     query_embedding = embedding_model.encode(
         request.query
-    ).tolist()
+).tolist()
 
     results = collection.query(
         query_embeddings=[query_embedding],
-        n_results=10
+        n_results=300
     )
 
     documents = results.get("documents", [[]])[0]
     metadatas = results.get("metadatas", [[]])[0]
+
+    print("\n====================")
+    print("SELECTED FILE:", request.selected_file)
+    print("SELECTED FUNCTION:", request.selected_function)
+    print("====================\n")
+
+    # =====================================
+    # CONTEXT AWARE RANKING
+    # =====================================
+
+    ranked_chunks = []
+
+    for doc, metadata in zip(documents, metadatas):
+
+        print(
+            metadata.get("file_path"),
+            " <-> ",
+            request.selected_file
+        )
+
+        score = 0
+
+        if (
+            request.selected_file
+            and metadata.get("file_path")
+            == request.selected_file
+        ):
+            score += 1000
+
+            if metadata.get("is_file_chunk"):
+                score += 5000
+
+        if (
+            request.selected_function
+            and metadata.get("name")
+            == request.selected_function
+        ):
+            score += 200
+
+        ranked_chunks.append({
+            "score": score,
+            "document": doc,
+            "metadata": metadata
+        })
+
+
+    ranked_chunks.sort(
+        key=lambda x: x["score"],
+        reverse=True
+    )
+
+    documents = [
+        item["document"]
+        for item in ranked_chunks[:10]
+    ]
+
+    metadatas = [
+        item["metadata"]
+        for item in ranked_chunks[:10]
+    ]
 
     dependency_graph = []
 
@@ -274,9 +335,12 @@ def ask_query(request: QueryRequest):
 
     small_docs = []
 
-    for doc in documents[:5]:
-
-        small_docs.append(doc[:1500])
+    if request.selected_file:
+        for doc in documents[:3]:
+            small_docs.append(doc[:4000])
+    else:
+        for doc in documents[:5]:
+            small_docs.append(doc[:1500])
 
     context = "\n\n".join(small_docs)
 
@@ -308,6 +372,17 @@ def ask_query(request: QueryRequest):
     - Explain repository-specific implementation details
     - Prefer concrete explanations over generic programming explanations
     - Explain flow step-by-step when relevant
+    - If a selected file exists, prioritize explaining that file.
+    - If a selected function exists, prioritize explaining that function.
+    - Ignore unrelated repository files unless necessary.
+
+    ACTIVE CONTEXT:
+
+    Selected File:
+    {request.selected_file}
+
+    Selected Function:
+    {request.selected_function}
 
     REPOSITORY CONTEXT:
     {context}
